@@ -1,24 +1,22 @@
-/* 
-
 body {
-  background-color: rgb(124, 123, 123);
-  min-height: 100vh;
-  min-width: 100vw;
   margin: 0;
   font-family: Arial, sans-serif;
-  color: white;
-  border:2px solid black;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+.sidebar-item {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar-item:hover {
+  background-color: #f8f9fa; /* Light gray */
+  color: #007bff; /* Bootstrap primary color */
 }
 
 
-footer {
-  height: 10rem;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-}
+img{
+  height: 3rem;
 
-h1{
-  font-size: 5rem;
-} */
+}

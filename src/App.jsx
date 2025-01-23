@@ -1,29 +1,18 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { MainLayout } from "./components/Layout/MainLayout";
+import React from "react";
 
-import "./App.css";
-import Summarization from "./pages/Summarization";
-import Rag from "./pages/Rag";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainLayout />,
-    children: [
-      {
-        path: "/",
-        element: <Summarization />,
-      },
-      {
-        path: "/rag",
-        element: <Rag />,
-      },
-    ],
-  },
-]);
-
-const App = () => {
-  return <RouterProvider router={router}></RouterProvider>;
-};
+import Dashboard from "./pages/Dashboard";
+function App() {
+  return (
+    <Router>
+      <div className="d-flex">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
 
 export default App;

@@ -8,7 +8,7 @@ const Rag = () => {
   const [error, setError] = useState("");
   const [selectedModel, setSelectedModel] = useState("4.0");
 
-  const { loading, error: apiError, response, postData } = useApi(); // Use the custom hook
+  const { loading, error: apiError, response, postData,fetchData } = useApi(); // Use the custom hook
 
   const allowedFileTypes = [
     "application/pdf", // PDF
@@ -58,10 +58,16 @@ const Rag = () => {
     for (let [key, value] of formData.entries()) {
       console.log(key, value);
     }
+    // const payload = {userId : 10 ,
+    //   id : 97 ,
+    //   title : "sample title" ,
+    //   body : "hut throodiadnsadsadadsadr"
+    //   }
 
-    await postData("https://your-api-endpoint.com/analyze", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    // await postData("https://jsonplaceholder.typicode.com/posts", formData, {
+    //   headers: { "Content-Type": "multipart/form-data" },
+    // });
+    await fetchData("https://jsonplaceholder.typicode.com/todos/1");
   };
 
   const handleModelChange = (event) => {
@@ -139,7 +145,12 @@ const Rag = () => {
           {loading ? (
             <p>Loading...</p>
           ) : response ? (
-            <p>{JSON.stringify(response)}</p>
+            <div>
+
+            <p>{JSON.stringify(response?.title)}</p>
+            <p>{JSON.stringify(response?.userId)}</p>
+            <p>{JSON.stringify(response?.completed)}</p>
+            </div>
           ) : (
             <p>No response yet.</p>
           )}
