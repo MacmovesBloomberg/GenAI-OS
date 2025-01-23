@@ -10,13 +10,12 @@ const Rag = () => {
 
   const { loading, error: apiError, response, postData } = useApi(); // Use the custom hook
 
-  // Allowed file types
   const allowedFileTypes = [
     "application/pdf", // PDF
-    "application/vnd.ms-excel", // Excel (.xls)
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Excel (.xlsx)
-    "application/msword", // Word (.doc)
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // Word (.docx)
+    // "application/vnd.ms-excel", // Excel (.xls)
+    // "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Excel (.xlsx)
+    // "application/msword", // Word (.doc)
+    // "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // Word (.docx)
   ];
 
   const handleFileUpload = (event) => {
@@ -29,11 +28,11 @@ const Rag = () => {
       setError(
         `Unsupported file(s): ${invalidFiles
           .map((file) => file.name)
-          .join(", ")}. Please upload only PDF, Word, or Excel files.`
+          .join(", ")}. Please upload only PDF file.`
       );
     } else {
       setUploadedFiles([...uploadedFiles, ...files]);
-      setError(""); // Clear error if all files are valid
+      setError("");
     }
   };
 
@@ -42,14 +41,13 @@ const Rag = () => {
       setError("Query cannot be empty.");
       return;
     }
-    if (uploadedFiles.length === 0) {
-      setError("Please upload at least one file.");
-      return;
-    }
+    // if (uploadedFiles.length === 0) {
+    //   setError("Please upload at least one file.");
+    //   return;
+    // }
 
     setError("");
 
-   
     const formData = new FormData();
     formData.append("query", query);
     formData.append("model", selectedModel);
@@ -71,35 +69,33 @@ const Rag = () => {
   };
 
   return (
-    <div className="container text-center p-4 bg-white rounded shadow">
-      <h1 className="text-center mb-4">Document Query System</h1>
-
-  
+    <div className="text-center p-4 rounded">
+      <h1 className="text-center mb-4">Retrieval-Augmented Generation</h1>
+      <br />
+      <br />
+      <br />
       <div className="mb-3">
-        <label htmlFor="model-dropdown" className="form-label">
-          Model:
-        </label>
-        <select
-          id="model-dropdown"
-          value={selectedModel}
-          onChange={handleModelChange}
-          className="form-select"
-        >
-          <option value="4.0">4.0</option>
-          <option value="3.0">3.0</option>
-          <option value="2.0">2.0</option>
-        </select>
+        <div className="row align-items-center">
+          <label htmlFor="model-dropdown" className="col-auto col-form-label">
+            Model:
+          </label>
+          <div className="col">
+            <select
+              id="model-dropdown"
+              value={selectedModel}
+              onChange={handleModelChange}
+              className="form-select"
+            >
+              <option value="4.0">4.0</option>
+              <option value="3.0">3.0</option>
+              <option value="2.0">2.0</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div className="input-group mb-3">
-        <input
-          type="text"
-          placeholder="Type your query here..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="form-control"
-        />
-        <label htmlFor="file-upload" className="input-group-text">
+      <label htmlFor="file-upload" className="input-group-text">
           📎
         </label>
         <input
@@ -109,20 +105,26 @@ const Rag = () => {
           multiple
           onChange={handleFileUpload}
         />
+        <input
+          type="text"
+          placeholder="Type your query here..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="form-control"
+        />
+        
         <button
           onClick={handleSubmit}
           className="btn btn-primary"
-          disabled={loading} 
+          disabled={loading}
         >
           ➤
         </button>
       </div>
 
-     
       {error && <div className="alert alert-danger">{error}</div>}
       {apiError && <div className="alert alert-danger">{apiError}</div>}
 
-      
       <div>
         {uploadedFiles.map((file, index) => (
           <p key={index} className="mb-1">
@@ -131,7 +133,6 @@ const Rag = () => {
         ))}
       </div>
 
-     
       <div className="card mt-4">
         <div className="card-body">
           <h5 className="card-title">API Response</h5>
