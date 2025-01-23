@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import useApi from "../useApi"; // Import the custom hook
 
 const Rag = () => {
   const [query, setQuery] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [error, setError] = useState("");
   const [selectedModel, setSelectedModel] = useState("4.0");
+
+  const { loading, error: apiError, response, postData } = useApi(); // Use the custom hook
 
   // Allowed file types
   const allowedFileTypes = [
@@ -34,13 +37,33 @@ const Rag = () => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Selected Model:", selectedModel);
-    console.log("Query:", query);
-    if (uploadedFiles.length > 0) {
-      console.log("Uploaded Files:", uploadedFiles);
+  const handleSubmit = async () => {
+    if (!query) {
+      setError("Query cannot be empty.");
+      return;
     }
-    setQuery(""); 
+    if (uploadedFiles.length === 0) {
+      setError("Please upload at least one file.");
+      return;
+    }
+
+    setError("");
+
+   
+    const formData = new FormData();
+    formData.append("query", query);
+    formData.append("model", selectedModel);
+    uploadedFiles.forEach((file, index) => {
+      formData.append(`file${index + 1}`, file);
+    });
+
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    await postData("https://your-api-endpoint.com/analyze", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
   };
 
   const handleModelChange = (event) => {
@@ -51,7 +74,7 @@ const Rag = () => {
     <div className="container text-center p-4 bg-white rounded shadow">
       <h1 className="text-center mb-4">Document Query System</h1>
 
-     
+  
       <div className="mb-3">
         <label htmlFor="model-dropdown" className="form-label">
           Model:
@@ -67,7 +90,6 @@ const Rag = () => {
           <option value="2.0">2.0</option>
         </select>
       </div>
-
 
       <div className="input-group mb-3">
         <input
@@ -87,15 +109,20 @@ const Rag = () => {
           multiple
           onChange={handleFileUpload}
         />
-        <button onClick={handleSubmit} className="btn btn-primary">
+        <button
+          onClick={handleSubmit}
+          className="btn btn-primary"
+          disabled={loading} 
+        >
           ➤
         </button>
       </div>
 
-
+     
       {error && <div className="alert alert-danger">{error}</div>}
+      {apiError && <div className="alert alert-danger">{apiError}</div>}
 
-    
+      
       <div>
         {uploadedFiles.map((file, index) => (
           <p key={index} className="mb-1">
@@ -104,17 +131,17 @@ const Rag = () => {
         ))}
       </div>
 
-
+     
       <div className="card mt-4">
         <div className="card-body">
-          <h5 className="card-title">Important Information</h5>
-          <p className="card-text">
-            Ensure you upload only PDF, Word, or Excel files. For best results,
-            use clear and concise queries.
-          </p>
-          <a href="#" className="btn btn-link">
-            Learn More
-          </a>
+          <h5 className="card-title">API Response</h5>
+          {loading ? (
+            <p>Loading...</p>
+          ) : response ? (
+            <p>{JSON.stringify(response)}</p>
+          ) : (
+            <p>No response yet.</p>
+          )}
         </div>
       </div>
     </div>
